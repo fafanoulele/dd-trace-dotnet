@@ -289,6 +289,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.AspNetMvc5_0", "sam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Datadog.Trace.AspNet", "src\Datadog.Trace.AspNet\Datadog.Trace.AspNet.csproj", "{B34EDBC7-C5FB-409D-8472-BC7469D6F2BD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenTracing.Contrib.NetCore", "..\opentracing-contrib\csharp-netcore\src\OpenTracing.Contrib.NetCore\OpenTracing.Contrib.NetCore.csproj", "{E5B927FA-B26E-4533-AA1C-A3D05EC2247D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Datadog.Trace.Diagnostics", "src\Datadog.Trace.Diagnostics\Datadog.Trace.Diagnostics.csproj", "{AF9AE820-ABA4-45CB-82B4-6AFD226A59C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -971,6 +975,30 @@ Global
 		{B34EDBC7-C5FB-409D-8472-BC7469D6F2BD}.Release|x64.Build.0 = Release|Any CPU
 		{B34EDBC7-C5FB-409D-8472-BC7469D6F2BD}.Release|x86.ActiveCfg = Release|Any CPU
 		{B34EDBC7-C5FB-409D-8472-BC7469D6F2BD}.Release|x86.Build.0 = Release|Any CPU
+		{E5B927FA-B26E-4533-AA1C-A3D05EC2247D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5B927FA-B26E-4533-AA1C-A3D05EC2247D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5B927FA-B26E-4533-AA1C-A3D05EC2247D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E5B927FA-B26E-4533-AA1C-A3D05EC2247D}.Debug|x64.Build.0 = Debug|Any CPU
+		{E5B927FA-B26E-4533-AA1C-A3D05EC2247D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E5B927FA-B26E-4533-AA1C-A3D05EC2247D}.Debug|x86.Build.0 = Debug|Any CPU
+		{E5B927FA-B26E-4533-AA1C-A3D05EC2247D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5B927FA-B26E-4533-AA1C-A3D05EC2247D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5B927FA-B26E-4533-AA1C-A3D05EC2247D}.Release|x64.ActiveCfg = Release|Any CPU
+		{E5B927FA-B26E-4533-AA1C-A3D05EC2247D}.Release|x64.Build.0 = Release|Any CPU
+		{E5B927FA-B26E-4533-AA1C-A3D05EC2247D}.Release|x86.ActiveCfg = Release|Any CPU
+		{E5B927FA-B26E-4533-AA1C-A3D05EC2247D}.Release|x86.Build.0 = Release|Any CPU
+		{AF9AE820-ABA4-45CB-82B4-6AFD226A59C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF9AE820-ABA4-45CB-82B4-6AFD226A59C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF9AE820-ABA4-45CB-82B4-6AFD226A59C2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AF9AE820-ABA4-45CB-82B4-6AFD226A59C2}.Debug|x64.Build.0 = Debug|Any CPU
+		{AF9AE820-ABA4-45CB-82B4-6AFD226A59C2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AF9AE820-ABA4-45CB-82B4-6AFD226A59C2}.Debug|x86.Build.0 = Debug|Any CPU
+		{AF9AE820-ABA4-45CB-82B4-6AFD226A59C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF9AE820-ABA4-45CB-82B4-6AFD226A59C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF9AE820-ABA4-45CB-82B4-6AFD226A59C2}.Release|x64.ActiveCfg = Release|Any CPU
+		{AF9AE820-ABA4-45CB-82B4-6AFD226A59C2}.Release|x64.Build.0 = Release|Any CPU
+		{AF9AE820-ABA4-45CB-82B4-6AFD226A59C2}.Release|x86.ActiveCfg = Release|Any CPU
+		{AF9AE820-ABA4-45CB-82B4-6AFD226A59C2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1040,6 +1068,7 @@ Global
 		{E41C87E9-7339-4FC0-8791-D57752C5BC12} = {CD9D9813-A195-464A-A0F1-59E02D16E181}
 		{D0424A27-4ED4-406E-80D5-2EFDCC53399B} = {65DF5743-B7B5-4BC8-8AB5-9DE596AF3FB8}
 		{B34EDBC7-C5FB-409D-8472-BC7469D6F2BD} = {9E5F0022-0A50-40BF-AC6A-C3078585ECAB}
+		{AF9AE820-ABA4-45CB-82B4-6AFD226A59C2} = {9E5F0022-0A50-40BF-AC6A-C3078585ECAB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {160A1D00-1F5B-40F8-A155-621B4459D78F}
