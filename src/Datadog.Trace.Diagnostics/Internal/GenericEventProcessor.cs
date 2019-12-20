@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Datadog.Trace.Interfaces;
 using Microsoft.Extensions.Logging;
-using OpenTracing.Contrib.NetCore.Configuration;
 using OpenTracing.Tag;
 
 namespace Datadog.Trace.Diagnostics.Internal
@@ -51,20 +50,22 @@ namespace Datadog.Trace.Diagnostics.Internal
 
         private void HandleActivityStart(string eventName, Activity activity, object untypedArg)
         {
-            ISpanBuilder spanBuilder = _tracer.BuildSpan(activity.OperationName)
-                .WithTag(Tags.Component, _listenerName);
+            Span span = _tracer.StartSpan(activity.OperationName);
+            span.SetTag(Tags.InstrumentationName, _listenerName);
+
 
             foreach (var tag in activity.Tags)
             {
-                spanBuilder.WithTag(tag.Key, tag.Value);
+                span.SetTag(tag.Key, tag.Value);
             }
 
-            spanBuilder.StartActive();
+            Scope scope = _tracer.ActivateSpan(span);
         }
 
         private void HandleActivityStop(string eventName, Activity activity)
         {
             IScope scope = _tracer.ScopeManager.Active;
+
             if (scope != null)
             {
                 scope.Dispose();
@@ -77,7 +78,7 @@ namespace Datadog.Trace.Diagnostics.Internal
 
         private void HandleRegularEvent(string eventName, object untypedArg)
         {
-            ISpan span = _tracer.ActiveSpan;
+            ISpan span = _tracer.ScopeManager.Active.Span;
 
             if (span != null)
             {

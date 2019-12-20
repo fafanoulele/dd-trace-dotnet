@@ -18,7 +18,7 @@ namespace Datadog.Trace.Diagnostics.CoreFx
     {
         public const string DiagnosticListenerName = "HttpHandlerDiagnosticListener";
 
-        private const string PropertiesKey = "ot-Span";
+        private const string PropertiesKey = "Datadog-Span";
 
         private static readonly PropertyFetcher _activityStart_RequestFetcher = new PropertyFetcher("Request");
         private static readonly PropertyFetcher _activityStop_RequestFetcher = new PropertyFetcher("Request");
@@ -45,33 +45,36 @@ namespace Datadog.Trace.Diagnostics.CoreFx
                 case "System.Net.Http.HttpRequestOut.Start":
                     {
                         var request = (HttpRequestMessage)_activityStart_RequestFetcher.Fetch(arg);
+                        Uri requestUri = request.RequestUri;
 
                         if (IgnoreRequest(request))
                         {
-                            Logger.LogDebug("Ignoring Request {RequestUri}", request.RequestUri);
+                            Logger.LogDebug("Ignoring Request {RequestUri}", requestUri);
                             return;
                         }
 
                         string operationName = _options.OperationNameResolver(request);
+                        Span span = Tracer.StartSpan(operationName);
 
-                        ISpan span = Tracer.BuildSpan(operationName)
-                            .WithTag(Tags.SpanKind, SpanKinds.Client)
-                            .WithTag(Tags.InstrumentationName, _options.ComponentName)
-                            .WithTag(Tags.HttpMethod, request.Method.ToString())
-                            .WithTag(Tags.HttpUrl, request.RequestUri.ToString())
-                            .WithTag(Tags.OutHost, request.RequestUri.Host)
-                            .WithTag(Tags.OutPort, request.RequestUri.Port)
-                            .Start();
+                        span.SetTag(Tags.SpanKind, SpanKinds.Client)
+                            .SetTag(Tags.InstrumentationName, _options.ComponentName)
+                            .SetTag(Tags.HttpMethod, request.Method.ToString())
+                            .SetTag(Tags.HttpUrl, requestUri.ToString())
+                            .SetTag(Tags.OutHost, requestUri.Host)
+                            .SetTag(Tags.OutPort, requestUri.Port.ToString());
+
+                        Scope scope = Tracer.ActivateSpan(span);
 
                         _options.OnRequest?.Invoke(span, request);
 
                         if (_options.InjectEnabled?.Invoke(request) ?? true)
                         {
-                            Tracer.Inject(span.Context, BuiltinFormats.HttpHeaders, new HttpHeadersInjectAdapter(request.Headers));
+                            // TODO lucas
+                            // Tracer.Inject(span.Context, BuiltinFormats.HttpHeaders, new HttpHeadersInjectAdapter(request.Headers));
                         }
 
                         // This throws if there's already an item with the same key. We do this for now to get notified of potential bugs.
-                        request.Properties.Add(PropertiesKey, span);
+                        request.Properties.Add(PropertiesKey, scope);
                     }
                     break;
 
@@ -79,13 +82,13 @@ namespace Datadog.Trace.Diagnostics.CoreFx
                     {
                         var request = (HttpRequestMessage)_exception_RequestFetcher.Fetch(arg);
 
-                        if (request.Properties.TryGetValue(PropertiesKey, out object objSpan) && objSpan is ISpan span)
+                        if (request.Properties.TryGetValue(PropertiesKey, out object objScope) && objScope is Scope scope)
                         {
                             var exception = (Exception)_exception_ExceptionFetcher.Fetch(arg);
 
-                            span.SetException(exception);
+                            scope.Span.SetException(exception);
 
-                            _options.OnError?.Invoke(span, exception, request);
+                            _options.OnError?.Invoke(scope.Span, exception, request);
                         }
                     }
                     break;
@@ -94,23 +97,22 @@ namespace Datadog.Trace.Diagnostics.CoreFx
                     {
                         var request = (HttpRequestMessage)_activityStop_RequestFetcher.Fetch(arg);
 
-                        if (request.Properties.TryGetValue(PropertiesKey, out object objSpan) && objSpan is ISpan span)
+                        if (request.Properties.TryGetValue(PropertiesKey, out object objScope) && objScope is Scope scope)
                         {
                             var response = (HttpResponseMessage)_activityStop_ResponseFetcher.Fetch(arg);
                             var requestTaskStatus = (TaskStatus)_activityStop_RequestTaskStatusFetcher.Fetch(arg);
 
                             if (response != null)
                             {
-                                span.SetTag(Tags.HttpStatusCode, ((int)response.StatusCode).ToString());
+                                scope.Span.SetTag(Tags.HttpStatusCode, ((int)response.StatusCode).ToString());
                             }
 
                             if (requestTaskStatus == TaskStatus.Canceled || requestTaskStatus == TaskStatus.Faulted)
                             {
-                                span.Error = true;
+                                scope.Span.Error = true;
                             }
 
-                            span.Finish();
-
+                            scope.Close();
                             request.Properties.Remove(PropertiesKey);
                         }
                     }
@@ -123,7 +125,9 @@ namespace Datadog.Trace.Diagnostics.CoreFx
             foreach (Func<HttpRequestMessage, bool> ignore in _options.IgnorePatterns)
             {
                 if (ignore(request))
+                {
                     return true;
+                }
             }
 
             return false;

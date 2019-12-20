@@ -196,7 +196,8 @@ namespace Datadog.Trace
         }
 
         /// <summary>
-        /// This is a shortcut for <see cref="StartSpan"/> and <see cref="ActivateSpan"/>, it creates a new span with the given parameters and makes it active.
+        /// This is a shortcut for <see cref="StartSpan(string, ISpanContext, string, DateTimeOffset?, bool)"/>
+        /// and <see cref="ActivateSpan"/>, it creates a new span with the given parameters and makes it active.
         /// </summary>
         /// <param name="operationName">The span's operation name</param>
         /// <param name="parent">The span's parent</param>
@@ -215,12 +216,33 @@ namespace Datadog.Trace
         /// Creates a new <see cref="Span"/> with the specified parameters.
         /// </summary>
         /// <param name="operationName">The span's operation name</param>
+        /// <returns>The newly created span</returns>
+        public Span StartSpan(string operationName)
+        {
+            return StartSpan(operationName, parent: null, serviceName: null, startTime: null, ignoreActiveScope: false);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Span"/> with the specified parameters.
+        /// </summary>
+        /// <param name="operationName">The span's operation name</param>
+        /// <param name="parent">The span's parent</param>
+        /// <returns>The newly created span</returns>
+        public Span StartSpan(string operationName, ISpanContext parent)
+        {
+            return StartSpan(operationName, parent: null, serviceName: null, startTime: null, ignoreActiveScope: false);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Span"/> with the specified parameters.
+        /// </summary>
+        /// <param name="operationName">The span's operation name</param>
         /// <param name="parent">The span's parent</param>
         /// <param name="serviceName">The span's service name</param>
         /// <param name="startTime">An explicit start time for that span</param>
         /// <param name="ignoreActiveScope">If set the span will not be a child of the currently active span</param>
         /// <returns>The newly created span</returns>
-        public Span StartSpan(string operationName, ISpanContext parent = null, string serviceName = null, DateTimeOffset? startTime = null, bool ignoreActiveScope = false)
+        public Span StartSpan(string operationName, ISpanContext parent, string serviceName, DateTimeOffset? startTime = null, bool ignoreActiveScope = false)
         {
             if (parent == null && !ignoreActiveScope)
             {

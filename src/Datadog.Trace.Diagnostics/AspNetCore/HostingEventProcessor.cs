@@ -53,13 +53,13 @@ namespace Datadog.Trace.Diagnostics.AspNetCore
 
                             string operationName = _options.OperationNameResolver(httpContext);
 
-                            IScope scope = _tracer.BuildSpan(operationName)
-                                .AsChildOf(extractedSpanContext)
-                                .WithTag(Tags.InstrumentationName, _options.ComponentName)
-                                .WithTag(Tags.SpanKind, SpanKinds.Server)
-                                .WithTag(Tags.HttpMethod, request.Method)
-                                .WithTag(Tags.HttpUrl, GetDisplayUrl(request))
-                                .StartActive();
+                            Span span = _tracer.StartSpan(operationName, extractedSpanContext)
+                                               .SetTag(Tags.InstrumentationName, _options.ComponentName)
+                                               .SetTag(Tags.SpanKind, SpanKinds.Server)
+                                               .SetTag(Tags.HttpMethod, request.Method)
+                                               .SetTag(Tags.HttpUrl, GetDisplayUrl(request));
+
+                            Scope scope = _tracer.ActivateSpan(span);
 
                             _options.OnRequest?.Invoke(scope.Span, httpContext);
                         }
@@ -68,7 +68,7 @@ namespace Datadog.Trace.Diagnostics.AspNetCore
 
                 case "Microsoft.AspNetCore.Hosting.UnhandledException":
                     {
-                        ISpan span = _tracer.ActiveSpan;
+                        ISpan span = _tracer.ScopeManager.Active.Span;
                         if (span != null)
                         {
                             var exception = (Exception)_unhandledException_ExceptionFetcher.Fetch(arg);
@@ -89,7 +89,7 @@ namespace Datadog.Trace.Diagnostics.AspNetCore
                         {
                             var httpContext = (HttpContext)_httpRequestIn_stop_HttpContextFetcher.Fetch(arg);
 
-                            scope.Span.SetTag(Tags.HttpStatusCode, httpContext.Response.StatusCode);
+                            scope.Span.SetTag(Tags.HttpStatusCode, httpContext.Response.StatusCode.ToString());
                             scope.Dispose();
                         }
                     }

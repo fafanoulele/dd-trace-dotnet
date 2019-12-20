@@ -3,7 +3,6 @@ using Datadog.Trace.Diagnostics.Internal;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using OpenTracing;
 
 namespace Datadog.Trace.Diagnostics.EntityFrameworkCore
 {
@@ -19,7 +18,7 @@ namespace Datadog.Trace.Diagnostics.EntityFrameworkCore
 
         protected override string GetListenerName() => DiagnosticListenerName;
 
-        public EntityFrameworkCoreDiagnostics(ILoggerFactory loggerFactory, ITracer tracer,
+        public EntityFrameworkCoreDiagnostics(ILoggerFactory loggerFactory, IDatadogTracer tracer,
             IOptions<EntityFrameworkCoreDiagnosticOptions> options, IOptions<GenericEventOptions> genericEventOptions)
             : base(loggerFactory, tracer, genericEventOptions.Value)
         {
@@ -33,17 +32,17 @@ namespace Datadog.Trace.Diagnostics.EntityFrameworkCore
                 case "Microsoft.EntityFrameworkCore.Database.Command.CommandExecuting":
                     {
                         CommandEventData args = (CommandEventData)untypedArg;
-
                         string operationName = _options.OperationNameResolver(args);
 
-                        Tracer.BuildSpan(operationName)
-                            .WithTag(OpenTracing.Tag.Tags.SpanKind, OpenTracing.Tag.Tags.SpanKindClient)
-                            .WithTag(OpenTracing.Tag.Tags.Component, _options.ComponentName)
-                            .WithTag(OpenTracing.Tag.Tags.DbInstance, args.Command.Connection.Database)
-                            .WithTag(OpenTracing.Tag.Tags.DbStatement, args.Command.CommandText)
-                            .WithTag(TagMethod, args.ExecuteMethod.ToString())
-                            .WithTag(TagIsAsync, args.IsAsync)
-                            .StartActive();
+                        Span span = Tracer.StartSpan(operationName)
+                                          .SetTag(Tags.SpanKind, OpenTracing.Tag.Tags.SpanKindClient)
+                                          .SetTag(Tags.InstrumentationName, _options.ComponentName)
+                                          .SetTag(Tags.DbName, args.Command.Connection.Database)
+                                          .SetTag(Tags.SqlQuery, args.Command.CommandText)
+                                          .SetTag(TagMethod, args.ExecuteMethod.ToString())
+                                          .SetTag(TagIsAsync, args.IsAsync.ToString());
+
+                        Scope scope = Tracer.ActivateSpan(span);
                     }
                     break;
 

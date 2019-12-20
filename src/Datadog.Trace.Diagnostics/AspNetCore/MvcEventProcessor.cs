@@ -59,11 +59,12 @@ namespace Datadog.Trace.Diagnostics.AspNetCore
                             ? $"Action {controllerActionDescriptor.ControllerTypeInfo.FullName}/{controllerActionDescriptor.ActionName}"
                             : $"Action {actionDescriptor.DisplayName}";
 
-                        _tracer.BuildSpan(operationName)
-                            .WithTag(Tags.Component, ActionComponent)
-                            .WithTag(ActionTagControllerName, controllerActionDescriptor?.ControllerTypeInfo.FullName)
-                            .WithTag(ActionTagActionName, controllerActionDescriptor?.ActionName)
-                            .StartActive();
+                        Span span = _tracer.StartSpan(operationName)
+                               .SetTag(Tags.InstrumentationName, ActionComponent)
+                               .SetTag(ActionTagControllerName, controllerActionDescriptor?.ControllerTypeInfo.FullName)
+                               .SetTag(ActionTagActionName, controllerActionDescriptor?.ActionName);
+
+                        Scope scope = _tracer.ActivateSpan(span);
                     }
                 }
                     return true;
@@ -88,14 +89,14 @@ namespace Datadog.Trace.Diagnostics.AspNetCore
                         //       we haven't yet determined which view (if any) will handle the request
 
                         object result = _beforeActionResult_ResultFetcher.Fetch(arg);
-
                         string resultType = result.GetType().Name;
                         string operationName = $"Result {resultType}";
 
-                        _tracer.BuildSpan(operationName)
-                            .WithTag(Tags.Component, ResultComponent)
-                            .WithTag(ResultTagType, resultType)
-                            .StartActive();
+                        Span span = _tracer.StartSpan(operationName)
+                                           .SetTag(Tags.InstrumentationName, ResultComponent)
+                                           .SetTag(ResultTagType, resultType);
+
+                        Scope scope = _tracer.ActivateSpan(span);
                     }
                 }
                     return true;

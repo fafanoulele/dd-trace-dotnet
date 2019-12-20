@@ -33,15 +33,15 @@ namespace Datadog.Trace.Diagnostics.CoreFx
                 case "System.Data.SqlClient.WriteCommandBefore":
                     {
                         var args = (SqlCommand)_activityCommand_RequestFetcher.Fetch(untypedArg);
-
                         string operationName = _options.OperationNameResolver(args);
 
-                        Tracer.BuildSpan(operationName)
-                            .WithTag(Tags.SpanKind, Tags.SpanKindClient)
-                            .WithTag(Tags.Component, _options.ComponentName)
-                            .WithTag(Tags.DbInstance, args.Connection.Database)
-                            .WithTag(Tags.DbStatement, args.CommandText)
-                            .StartActive();
+                        Span span = Tracer.StartSpan(operationName)
+                                          .SetTag(Tags.SpanKind, SpanKinds.Client)
+                                          .SetTag(Tags.InstrumentationName, _options.ComponentName)
+                                          .SetTag(Tags.DbName, args.Connection.Database)
+                                          .SetTag(Tags.SqlQuery, args.CommandText);
+
+                        Scope scope = Tracer.ActivateSpan(span);
                     }
                     break;
 
