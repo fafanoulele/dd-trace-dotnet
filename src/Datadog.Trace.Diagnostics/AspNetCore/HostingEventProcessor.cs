@@ -68,15 +68,14 @@ namespace Datadog.Trace.Diagnostics.AspNetCore
 
                 case "Microsoft.AspNetCore.Hosting.UnhandledException":
                     {
-                        ISpan span = _tracer.ScopeManager.Active.Span;
+                        ISpan span = _tracer.ScopeManager.Active?.Span;
+
                         if (span != null)
                         {
                             var exception = (Exception)_unhandledException_ExceptionFetcher.Fetch(arg);
-
-                            span.SetException(exception);
-
                             var httpContext = (HttpContext)_unhandledException_HttpContextFetcher.Fetch(arg);
 
+                            span.SetException(exception);
                             _options.OnError?.Invoke(span, exception, httpContext);
                         }
                     }
@@ -85,10 +84,10 @@ namespace Datadog.Trace.Diagnostics.AspNetCore
                 case "Microsoft.AspNetCore.Hosting.HttpRequestIn.Stop":
                     {
                         IScope scope = _tracer.ScopeManager.Active;
+
                         if (scope != null)
                         {
                             var httpContext = (HttpContext)_httpRequestIn_stop_HttpContextFetcher.Fetch(arg);
-
                             scope.Span.SetTag(Tags.HttpStatusCode, httpContext.Response.StatusCode.ToString());
                             scope.Dispose();
                         }

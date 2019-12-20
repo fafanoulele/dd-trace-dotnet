@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -36,6 +37,22 @@ namespace Datadog.Trace.Diagnostics.CoreFx
             : base(loggerFactory, tracer, genericEventOptions.Value)
         {
             _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
+
+            _options.IgnorePatterns.Add(
+                requestMessage =>
+                {
+                    if (requestMessage.Headers.TryGetValues(HttpHeaderNames.TracingEnabled, out var headerValues))
+                    {
+                        if (headerValues.Any(s => string.Equals(s, "false", StringComparison.OrdinalIgnoreCase)))
+                        {
+                            // tracing is disabled for this request via http header,
+                            // return true to ignore request
+                            return true;
+                        }
+                    }
+
+                    return false;
+                });
         }
 
         protected override void OnNext(string eventName, object arg)
