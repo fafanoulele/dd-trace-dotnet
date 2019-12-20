@@ -19,17 +19,20 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddDatadogTracing(this IServiceCollection services, Action<IOpenTracingBuilder> builder = null)
         {
             if (services == null)
+            {
                 throw new ArgumentNullException(nameof(services));
+            }
 
-            return services.AddDatadogCoreServices(otBuilder =>
-                                                       {
-                                                           otBuilder.AddAspNetCore()
-                                                                    .AddCoreFx()
-                                                                    .AddEntityFrameworkCore();
+            return services.AddDatadogCoreServices(
+                ddBuilder =>
+                {
+                    ddBuilder.AddAspNetCore()
+                             .AddCoreFx()
+                             .AddEntityFrameworkCore();
                     //.AddLoggerProvider();
 
-                builder?.Invoke(otBuilder);
-            });
+                    builder?.Invoke(ddBuilder);
+                });
         }
 
         /// <summary>
