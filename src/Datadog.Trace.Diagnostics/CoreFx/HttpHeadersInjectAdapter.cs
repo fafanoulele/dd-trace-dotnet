@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Net.Http.Headers;
 using OpenTracing.Propagation;
 
-namespace OpenTracing.Contrib.NetCore.CoreFx
+namespace Datadog.Trace.Diagnostics.CoreFx
 {
     internal sealed class HttpHeadersInjectAdapter : ITextMap
     {

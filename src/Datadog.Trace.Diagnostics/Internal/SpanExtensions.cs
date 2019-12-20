@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Datadog.Trace.Interfaces;
 using OpenTracing.Tag;
 
 namespace Datadog.Trace.Diagnostics.Internal
@@ -12,17 +13,10 @@ namespace Datadog.Trace.Diagnostics.Internal
         /// </summary>
         public static void SetException(this ISpan span, Exception exception)
         {
-            if (span == null || exception == null)
-                return;
-
-            span.SetTag(Tags.Error, true);
-
-            span.Log(new Dictionary<string, object>(3)
+            if (span != null && exception != null)
             {
-                { LogFields.Event, Tags.Error.Key },
-                { LogFields.ErrorKind, exception.GetType().Name },
-                { LogFields.ErrorObject, exception }
-            });
+                span.SetException(exception);
+            }
         }
     }
 }

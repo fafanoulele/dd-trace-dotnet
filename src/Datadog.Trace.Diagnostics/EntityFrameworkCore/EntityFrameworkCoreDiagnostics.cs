@@ -1,12 +1,11 @@
 using System;
+using Datadog.Trace.Diagnostics.Internal;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using OpenTracing.Contrib.NetCore.Configuration;
-using Datadog.Trace.Diagnostics.Internal;
-using OpenTracing.Tag;
+using OpenTracing;
 
-namespace OpenTracing.Contrib.NetCore.EntityFrameworkCore
+namespace Datadog.Trace.Diagnostics.EntityFrameworkCore
 {
     internal sealed class EntityFrameworkCoreDiagnostics : DiagnosticListenerObserver
     {
@@ -38,10 +37,10 @@ namespace OpenTracing.Contrib.NetCore.EntityFrameworkCore
                         string operationName = _options.OperationNameResolver(args);
 
                         Tracer.BuildSpan(operationName)
-                            .WithTag(Tags.SpanKind, Tags.SpanKindClient)
-                            .WithTag(Tags.Component, _options.ComponentName)
-                            .WithTag(Tags.DbInstance, args.Command.Connection.Database)
-                            .WithTag(Tags.DbStatement, args.Command.CommandText)
+                            .WithTag(OpenTracing.Tag.Tags.SpanKind, OpenTracing.Tag.Tags.SpanKindClient)
+                            .WithTag(OpenTracing.Tag.Tags.Component, _options.ComponentName)
+                            .WithTag(OpenTracing.Tag.Tags.DbInstance, args.Command.Connection.Database)
+                            .WithTag(OpenTracing.Tag.Tags.DbStatement, args.Command.CommandText)
                             .WithTag(TagMethod, args.ExecuteMethod.ToString())
                             .WithTag(TagIsAsync, args.IsAsync)
                             .StartActive();

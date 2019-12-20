@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Data.SqlClient;
 using System.Linq;
 
-namespace OpenTracing.Contrib.NetCore.CoreFx
+namespace Datadog.Trace.Diagnostics.CoreFx
 {
     public class SqlClientDiagnosticOptions
     {

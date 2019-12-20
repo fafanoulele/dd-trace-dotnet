@@ -10,7 +10,7 @@ namespace Datadog.Trace.Diagnostics.Internal
     internal sealed class DiagnosticManager : IObserver<DiagnosticListener>, IDisposable
     {
         private readonly ILogger _logger;
-        private readonly ITracer _tracer;
+        private readonly IDatadogTracer _tracer;
         private readonly IEnumerable<DiagnosticObserver> _diagnosticSubscribers;
         private readonly DiagnosticManagerOptions _options;
 
@@ -21,7 +21,7 @@ namespace Datadog.Trace.Diagnostics.Internal
 
         public DiagnosticManager(
             ILoggerFactory loggerFactory,
-            ITracer tracer,
+            IDatadogTracer tracer,
             IEnumerable<DiagnosticObserver> diagnosticSubscribers,
             IOptions<DiagnosticManagerOptions> options)
         {
@@ -43,11 +43,12 @@ namespace Datadog.Trace.Diagnostics.Internal
         {
             if (_allListenersSubscription == null)
             {
-                if (_tracer.IsNoopTracer() && !_options.StartInstrumentationForNoopTracer)
-                {
-                    _logger.LogWarning("Instrumentation has not been started because no tracer was registered.");
-                }
-                else
+                // TODO lucas
+                // if (_tracer.IsNoopTracer() && !_options.StartInstrumentationForNoopTracer)
+                // {
+                //     _logger.LogWarning("Instrumentation has not been started because no tracer was registered.");
+                // }
+                // else
                 {
                     _logger.LogTrace("Starting AllListeners subscription");
                     _allListenersSubscription = DiagnosticListener.AllListeners.Subscribe(this);

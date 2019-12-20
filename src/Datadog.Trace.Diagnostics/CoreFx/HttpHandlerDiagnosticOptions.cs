@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using Datadog.Trace.Interfaces;
 
-namespace OpenTracing.Contrib.NetCore.CoreFx
+namespace Datadog.Trace.Diagnostics.CoreFx
 {
     public class HttpHandlerDiagnosticOptions
     {

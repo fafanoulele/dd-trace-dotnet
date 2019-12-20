@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using Datadog.Trace.Interfaces;
 using Microsoft.AspNetCore.Http;
 
-namespace OpenTracing.Contrib.NetCore.AspNetCore
+namespace Datadog.Trace.Diagnostics.AspNetCore
 {
     public class HostingOptions
     {

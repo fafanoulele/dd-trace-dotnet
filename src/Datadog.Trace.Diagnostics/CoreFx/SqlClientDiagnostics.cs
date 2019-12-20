@@ -1,11 +1,12 @@
-﻿using System;
+using System;
 using System.Data.SqlClient;
+using Datadog.Trace.Diagnostics.CoreFx;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Datadog.Trace.Diagnostics.Internal;
 using OpenTracing.Tag;
 
-namespace OpenTracing.Contrib.NetCore.CoreFx
+namespace Datadog.Trace.Diagnostics.CoreFx
 {
     internal sealed class SqlClientDiagnostics : DiagnosticListenerObserver
     {
@@ -16,7 +17,7 @@ namespace OpenTracing.Contrib.NetCore.CoreFx
 
         private readonly SqlClientDiagnosticOptions _options;
 
-        public SqlClientDiagnostics(ILoggerFactory loggerFactory, ITracer tracer, IOptions<SqlClientDiagnosticOptions> options,
+        public SqlClientDiagnostics(ILoggerFactory loggerFactory, IDatadogTracer tracer, IOptions<SqlClientDiagnosticOptions> options,
             IOptions<GenericEventOptions> genericEventOptions)
            : base(loggerFactory, tracer, genericEventOptions.Value)
         {

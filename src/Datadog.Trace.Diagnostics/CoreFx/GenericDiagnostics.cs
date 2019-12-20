@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Datadog.Trace.Diagnostics.Internal;
 
-namespace OpenTracing.Contrib.NetCore.CoreFx
+namespace Datadog.Trace.Diagnostics.CoreFx
 {
     /// <summary>
     /// A <see cref="DiagnosticListener"/> subscriber that logs ALL events to <see cref="ITracer.ActiveSpan"/>.
@@ -15,7 +15,7 @@ namespace OpenTracing.Contrib.NetCore.CoreFx
         private readonly GenericDiagnosticOptions _options;
         private readonly GenericEventOptions _genericEventOptions;
 
-        public GenericDiagnostics(ILoggerFactory loggerFactory, ITracer tracer, IOptions<GenericDiagnosticOptions> options,
+        public GenericDiagnostics(ILoggerFactory loggerFactory, IDatadogTracer tracer, IOptions<GenericDiagnosticOptions> options,
             IOptions<GenericEventOptions> genericEventOptions)
             : base(loggerFactory, tracer)
         {

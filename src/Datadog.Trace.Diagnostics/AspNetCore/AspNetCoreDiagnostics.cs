@@ -1,11 +1,9 @@
 using System;
-using Datadog.Trace;
+using Datadog.Trace.Diagnostics.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using OpenTracing.Contrib.NetCore.Configuration;
-using Datadog.Trace.Diagnostics.Internal;
 
-namespace OpenTracing.Contrib.NetCore.AspNetCore
+namespace Datadog.Trace.Diagnostics.AspNetCore
 {
     /// <summary>
     /// Instruments ASP.NET Core.

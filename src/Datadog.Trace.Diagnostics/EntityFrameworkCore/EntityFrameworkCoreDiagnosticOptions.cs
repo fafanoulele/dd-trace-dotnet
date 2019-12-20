@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace OpenTracing.Contrib.NetCore.EntityFrameworkCore
+namespace Datadog.Trace.Diagnostics.EntityFrameworkCore
 {
     public class EntityFrameworkCoreDiagnosticOptions
     {

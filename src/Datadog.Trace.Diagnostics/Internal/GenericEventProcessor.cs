@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Datadog.Trace.Interfaces;
 using Microsoft.Extensions.Logging;
 using OpenTracing.Contrib.NetCore.Configuration;
 using OpenTracing.Tag;
@@ -10,12 +11,12 @@ namespace Datadog.Trace.Diagnostics.Internal
     internal class GenericEventProcessor
     {
         private readonly string _listenerName;
-        private readonly ITracer _tracer;
+        private readonly IDatadogTracer _tracer;
         private readonly ILogger _logger;
         private readonly bool _isLogLevelTraceEnabled;
         private readonly GenericEventOptions _options;
 
-        public GenericEventProcessor(string listenerName, ITracer tracer, ILogger logger, GenericEventOptions options)
+        public GenericEventProcessor(string listenerName, IDatadogTracer tracer, ILogger logger, GenericEventOptions options)
         {
             _listenerName = listenerName ?? throw new ArgumentNullException(nameof(listenerName));
             _tracer = tracer ?? throw new ArgumentNullException(nameof(tracer));
@@ -80,7 +81,8 @@ namespace Datadog.Trace.Diagnostics.Internal
 
             if (span != null)
             {
-                span.Log(GetLogFields(eventName, untypedArg));
+                // TODO lucas
+                // span.Log(GetLogFields(eventName, untypedArg));
             }
             else if (_isLogLevelTraceEnabled)
             {
@@ -88,6 +90,7 @@ namespace Datadog.Trace.Diagnostics.Internal
             }
         }
 
+        /*
         private Dictionary<string, object> GetLogFields(string eventName, object arg)
         {
             var fields = new Dictionary<string, object>
@@ -124,5 +127,6 @@ namespace Datadog.Trace.Diagnostics.Internal
 
             return fields;
         }
+        */
     }
 }

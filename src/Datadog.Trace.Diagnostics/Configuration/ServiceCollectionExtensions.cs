@@ -1,12 +1,13 @@
 using System;
+using Datadog.Trace.Diagnostics;
+using Datadog.Trace.Diagnostics.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using OpenTracing;
-using OpenTracing.Contrib.NetCore;
-using OpenTracing.Contrib.NetCore.Configuration;
 using Datadog.Trace.Diagnostics.Internal;
 using OpenTracing.Util;
 
+// ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
@@ -24,7 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 otBuilder.AddAspNetCore()
                     .AddCoreFx()
                     .AddEntityFrameworkCore()
-                    .AddLoggerProvider();
+                    //.AddLoggerProvider();
 
                 builder?.Invoke(otBuilder);
             });

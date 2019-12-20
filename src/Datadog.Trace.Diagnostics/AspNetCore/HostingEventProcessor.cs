@@ -1,12 +1,11 @@
 using System;
-using Datadog.Trace;
+using Datadog.Trace.Diagnostics.Internal;
 using Datadog.Trace.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Logging;
-using Datadog.Trace.Diagnostics.Internal;
 
-namespace OpenTracing.Contrib.NetCore.AspNetCore
+namespace Datadog.Trace.Diagnostics.AspNetCore
 {
     internal class HostingEventProcessor
     {

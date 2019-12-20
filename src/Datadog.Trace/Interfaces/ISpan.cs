@@ -1,12 +1,20 @@
+// TODO lucas
+#pragma warning disable 1591
+
 using System;
 
 namespace Datadog.Trace.Interfaces
 {
-    internal interface ISpan
+    public interface ISpan
     {
         string ResourceName { get; set; }
 
         string Type { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this span represents an error
+        /// </summary>
+        bool Error { get; set; }
 
         ISpan SetTag(string key, string value);
 

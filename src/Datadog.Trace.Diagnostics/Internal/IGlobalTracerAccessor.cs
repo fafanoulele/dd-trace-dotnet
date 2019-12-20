@@ -5,6 +5,6 @@ namespace Datadog.Trace.Diagnostics.Internal
     /// </summary>
     public interface IGlobalTracerAccessor
     {
-        ITracer GetGlobalTracer();
+        Tracer GetGlobalTracer();
     }
 }

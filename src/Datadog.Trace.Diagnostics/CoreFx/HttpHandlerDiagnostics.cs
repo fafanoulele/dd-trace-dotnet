@@ -3,12 +3,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using OpenTracing.Contrib.NetCore.Configuration;
 using Datadog.Trace.Diagnostics.Internal;
+using Datadog.Trace.Interfaces;
 using OpenTracing.Propagation;
-using OpenTracing.Tag;
 
-namespace OpenTracing.Contrib.NetCore.CoreFx
+namespace Datadog.Trace.Diagnostics.CoreFx
 {
     /// <summary>
     /// Instruments outgoing HTTP calls that use <see cref="HttpClientHandler"/>.
@@ -32,7 +31,7 @@ namespace OpenTracing.Contrib.NetCore.CoreFx
 
         protected override string GetListenerName() => DiagnosticListenerName;
 
-        public HttpHandlerDiagnostics(ILoggerFactory loggerFactory, ITracer tracer,
+        public HttpHandlerDiagnostics(ILoggerFactory loggerFactory, IDatadogTracer tracer,
             IOptions<HttpHandlerDiagnosticOptions> options, IOptions<GenericEventOptions> genericEventOptions)
             : base(loggerFactory, tracer, genericEventOptions.Value)
         {
@@ -56,12 +55,12 @@ namespace OpenTracing.Contrib.NetCore.CoreFx
                         string operationName = _options.OperationNameResolver(request);
 
                         ISpan span = Tracer.BuildSpan(operationName)
-                            .WithTag(Tags.SpanKind, Tags.SpanKindClient)
-                            .WithTag(Tags.Component, _options.ComponentName)
+                            .WithTag(Tags.SpanKind, SpanKinds.Client)
+                            .WithTag(Tags.InstrumentationName, _options.ComponentName)
                             .WithTag(Tags.HttpMethod, request.Method.ToString())
                             .WithTag(Tags.HttpUrl, request.RequestUri.ToString())
-                            .WithTag(Tags.PeerHostname, request.RequestUri.Host)
-                            .WithTag(Tags.PeerPort, request.RequestUri.Port)
+                            .WithTag(Tags.OutHost, request.RequestUri.Host)
+                            .WithTag(Tags.OutPort, request.RequestUri.Port)
                             .Start();
 
                         _options.OnRequest?.Invoke(span, request);
@@ -102,12 +101,12 @@ namespace OpenTracing.Contrib.NetCore.CoreFx
 
                             if (response != null)
                             {
-                                span.SetTag(Tags.HttpStatus, (int)response.StatusCode);
+                                span.SetTag(Tags.HttpStatusCode, ((int)response.StatusCode).ToString());
                             }
 
                             if (requestTaskStatus == TaskStatus.Canceled || requestTaskStatus == TaskStatus.Faulted)
                             {
-                                span.SetTag(Tags.Error, true);
+                                span.Error = true;
                             }
 
                             span.Finish();

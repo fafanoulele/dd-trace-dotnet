@@ -1,6 +1,4 @@
-﻿using OpenTracing.Contrib.NetCore.AspNetCore;
-
-namespace OpenTracing.Contrib.NetCore.Configuration
+namespace Datadog.Trace.Diagnostics.AspNetCore
 {
     public class AspNetCoreDiagnosticOptions
     {

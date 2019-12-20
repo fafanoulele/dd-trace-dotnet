@@ -1,12 +1,10 @@
-using OpenTracing.Util;
-
 namespace Datadog.Trace.Diagnostics.Internal
 {
     public class GlobalTracerAccessor : IGlobalTracerAccessor
     {
-        public ITracer GetGlobalTracer()
+        public Tracer GetGlobalTracer()
         {
-            return GlobalTracer.Instance;
+            return Tracer.Instance;
         }
     }
 }

@@ -1,8 +1,11 @@
+// TODO lucas
+#pragma warning disable 1591
+
 using System;
 
 namespace Datadog.Trace.Interfaces
 {
-    internal interface IScope : IDisposable
+    public interface IScope : IDisposable
     {
         ISpan Span { get; }
     }

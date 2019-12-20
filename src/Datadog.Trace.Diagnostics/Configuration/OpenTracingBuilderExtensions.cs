@@ -1,13 +1,13 @@
 using System;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using OpenTracing.Contrib.NetCore.AspNetCore;
-using OpenTracing.Contrib.NetCore.Configuration;
-using OpenTracing.Contrib.NetCore.CoreFx;
-using OpenTracing.Contrib.NetCore.EntityFrameworkCore;
+using Datadog.Trace.Diagnostics.AspNetCore;
+using Datadog.Trace.Diagnostics.Configuration;
+using Datadog.Trace.Diagnostics.CoreFx;
+using Datadog.Trace.Diagnostics.EntityFrameworkCore;
 using Datadog.Trace.Diagnostics.Internal;
-using OpenTracing.Contrib.NetCore.Logging;
 
+// ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class OpenTracingBuilderExtensions
@@ -112,22 +112,23 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        public static IOpenTracingBuilder AddLoggerProvider(this IOpenTracingBuilder builder)
-        {
-            if (builder == null)
-                throw new ArgumentNullException(nameof(builder));
-
-            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, OpenTracingLoggerProvider>());
-            builder.Services.Configure<LoggerFilterOptions>(options =>
-            {
-                // All interesting request-specific logs are instrumented via DiagnosticSource.
-                options.AddFilter<OpenTracingLoggerProvider>("Microsoft.AspNetCore.Hosting", LogLevel.None);
-
-                // EF Core is sending everything to DiagnosticSource AND ILogger so we completely disable the category.
-                options.AddFilter<OpenTracingLoggerProvider>("Microsoft.EntityFrameworkCore", LogLevel.None);
-            });
-
-            return builder;
-        }
+        // TODO lucas
+        //public static IOpenTracingBuilder AddLoggerProvider(this IOpenTracingBuilder builder)
+        //{
+        //    if (builder == null)
+        //        throw new ArgumentNullException(nameof(builder));
+        //
+        //    builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, OpenTracingLoggerProvider>());
+        //    builder.Services.Configure<LoggerFilterOptions>(options =>
+        //    {
+        //        // All interesting request-specific logs are instrumented via DiagnosticSource.
+        //        options.AddFilter<OpenTracingLoggerProvider>("Microsoft.AspNetCore.Hosting", LogLevel.None);
+        //
+        //        // EF Core is sending everything to DiagnosticSource AND ILogger so we completely disable the category.
+        //        options.AddFilter<OpenTracingLoggerProvider>("Microsoft.EntityFrameworkCore", LogLevel.None);
+        //    });
+        //
+        //    return builder;
+        //}
     }
 }

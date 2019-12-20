@@ -4,7 +4,6 @@ using System.Diagnostics;
 using Datadog.Trace;
 using Datadog.Trace.Interfaces;
 using Microsoft.Extensions.Logging;
-using OpenTracing.Contrib.NetCore.Configuration;
 
 namespace Datadog.Trace.Diagnostics.Internal
 {

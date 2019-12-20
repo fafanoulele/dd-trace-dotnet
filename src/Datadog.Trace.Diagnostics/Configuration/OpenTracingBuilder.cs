@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace OpenTracing.Contrib.NetCore.Configuration
+namespace Datadog.Trace.Diagnostics.Configuration
 {
     internal class OpenTracingBuilder : IOpenTracingBuilder
     {

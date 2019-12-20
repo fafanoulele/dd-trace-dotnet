@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Datadog.Trace.Diagnostics.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Logging;
-using Datadog.Trace.Diagnostics.Internal;
-using OpenTracing.Tag;
 
-namespace OpenTracing.Contrib.NetCore.AspNetCore
+namespace Datadog.Trace.Diagnostics.AspNetCore
 {
     internal sealed class MvcEventProcessor
     {
@@ -25,11 +24,11 @@ namespace OpenTracing.Contrib.NetCore.AspNetCore
         private static readonly PropertyFetcher _beforeActionResult_actionContextFetcher = new PropertyFetcher("actionContext");
         private static readonly PropertyFetcher _beforeActionResult_ResultFetcher = new PropertyFetcher("result");
 
-        private readonly ITracer _tracer;
+        private readonly IDatadogTracer _tracer;
         private readonly ILogger _logger;
         private readonly IList<Func<HttpContext, bool>> _ignorePatterns;
 
-        public MvcEventProcessor(ITracer tracer, ILogger logger, IList<Func<HttpContext, bool>> ignorePatterns)
+        public MvcEventProcessor(IDatadogTracer tracer, ILogger logger, IList<Func<HttpContext, bool>> ignorePatterns)
         {
             _ignorePatterns = ignorePatterns;
             _tracer = tracer ?? throw new ArgumentNullException(nameof(tracer));
@@ -110,7 +109,7 @@ namespace OpenTracing.Contrib.NetCore.AspNetCore
                 default: return false;
             }
         }
-        
+
         private bool ShouldIgnore(HttpContext httpContext)
         {
             return _ignorePatterns.Any(ignore => ignore(httpContext));

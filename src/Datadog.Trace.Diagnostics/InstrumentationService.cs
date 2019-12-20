@@ -1,10 +1,10 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
 using Datadog.Trace.Diagnostics.Internal;
+using Microsoft.Extensions.Hosting;
 
-namespace OpenTracing.Contrib.NetCore
+namespace Datadog.Trace.Diagnostics
 {
     /// <summary>
     /// Starts and stops all OpenTracing instrumentation components.
